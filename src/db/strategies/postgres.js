@@ -21,7 +21,6 @@ class PostgresDB extends ICrud {
     super();
     this._driver = null;
     this._herois = null;
-    this._connect();
   }
 
   create(item) {
@@ -64,16 +63,22 @@ class PostgresDB extends ICrud {
       }
     );
 
-    await Herois.sync();
+    await this._herois.sync();
   }
 
-  _connect() {
+  async connect() {
     this._driver = new Sequelize(
       connection.db,
       connection.username,
       connection.password,
       configs
     );
+
+    await this.defineModel();
+  }
+
+  async create(item) {
+    return this._herois.create(item);
   }
 }
 
